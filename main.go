@@ -16,4 +16,6 @@ func main() {
 	fmt.Println("temperature in Fahrenheit:", f)
 
 	stage1.FizzBuzz() // FizzBuzz
+
+	stage1.StringReversalTakingUnicode("hello") // StringReversalTakingUnicode
 }
