@@ -14,4 +14,6 @@ func main() {
 		return
 	}
 	fmt.Println("temperature in Fahrenheit:", f)
+
+	stage1.FizzBuzz() // FizzBuzz
 }
