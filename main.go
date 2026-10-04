@@ -18,4 +18,6 @@ func main() {
 	stage1.FizzBuzz() // FizzBuzz
 
 	stage1.StringReversalTakingUnicode("hello") // StringReversalTakingUnicode
+
+	stage1.PalindromCheck("oraro")
 }
