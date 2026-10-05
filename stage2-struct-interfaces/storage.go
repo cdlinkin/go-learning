@@ -1,3 +1,21 @@
+/*
+	exercise:
+
+Define the interface:
+
+	type Storage interface {
+	 Save(key string, value []byte) error
+	 Load(key string) ([]byte, error)
+	 Delete(key string) error
+	}
+
+Implement three variants:
+1. MemoryStorage
+2. FileStorage (a file per key in the directory)
+3. LoggingStorage, which wraps any other Storage and logs calls (the “decorator” pattern)
+
+Write a function Backup(src, dst Storage, keys []string) error that accepts interfaces and is unaware of specific types.
+*/
 package stage2
 
 import (
