@@ -1,12 +1,17 @@
 /*
-exersice:
+exercise:
 
 	Shape with Area() and Perimeter() methods; types Circle, Rect, Triangle;
 	function for the total area []Shape; sort.Slice by area
+
+exercise:
+
+	Implement String() for your type and make sure that fmt.Println uses it.
 */
 package stage2
 
 import (
+	"fmt"
 	"math"
 	"sort"
 )
@@ -26,6 +31,10 @@ func (c *Circle) Area() float64 {
 
 func (c *Circle) Perimeter() float64 {
 	return 2 * math.Pi * c.R
+}
+
+func (c *Circle) String() string {
+	return fmt.Sprintf("Circle: Area: %.2f.\n Perimeter: %.2f.", c.Area(), c.Perimeter())
 }
 
 type Rect struct {
