@@ -15,22 +15,29 @@ type TaskManager struct {
 }
 
 func (t *TaskManager) Add(title string) {
+	var maxID int
+	for _, task := range t.Tasks {
+		if task.ID > maxID {
+			maxID = task.ID
+		}
+	}
+
 	t.Tasks = append(t.Tasks, Task{
-		ID:    len(t.Tasks) + 1,
+		ID:    maxID + 1,
 		Title: title,
 		Done:  false,
 	})
 }
 
 func (t *TaskManager) List() {
-	for _, task := range t.Tasks {
+	for i, task := range t.Tasks {
 		var done string
 		if task.Done {
 			done = "[x]"
 		} else {
 			done = "[ ]"
 		}
-		fmt.Printf("%d. %s %s\n", task.ID, task.Title, done)
+		fmt.Printf("%d. %s %s\n", i+1, task.Title, done)
 	}
 }
 
