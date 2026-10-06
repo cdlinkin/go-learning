@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -11,12 +12,22 @@ import (
 )
 
 func main() {
-	path, err := os.UserHomeDir()
-	if err != nil {
-		fmt.Printf("user home dir: %v", err)
-		return
+	filePath := flag.String("file", "", "path to tasks file")
+	flag.Parse()
+
+	var path string
+
+	if *filePath != "" {
+		path = *filePath
+	} else {
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			fmt.Printf("user home dir: %v\n", err)
+			return
+		}
+
+		path = filepath.Join(homeDir, "tasks.json")
 	}
-	path = filepath.Join(path, "tasks.json")
 
 	fileStorage := storage.NewFileStorage(path)
 
@@ -34,53 +45,63 @@ func main() {
 		Tasks: tasks,
 	}
 
-	if len(os.Args) < 2 {
+	args := flag.Args()
+
+	if len(args) < 1 {
 		fmt.Println("not enough arguments")
 		return
 	}
 
-	switch os.Args[1] {
+	switch args[0] {
 	case "add":
-		if len(os.Args) < 3 {
+		if len(args) < 2 {
 			fmt.Println("not enough arguments")
 			return
 		}
 
-		taskManager.Add(os.Args[2])
+		taskManager.Add(args[1])
 	case "list":
 		taskManager.List()
 	case "done":
-		if len(os.Args) < 3 {
+		if len(args) < 2 {
 			fmt.Println("not enough arguments")
 			return
 		}
 
-		id, err := strconv.Atoi(os.Args[2])
+		id, err := strconv.Atoi(args[1])
 		if err != nil {
 			fmt.Printf("strconv id: %v", err)
 			return
 		}
 
 		if err := taskManager.Done(id); err != nil {
-			fmt.Printf("task manager done: %v", err)
+			if errors.Is(err, task.ErrTaskNotFound) {
+				fmt.Println(task.ErrTaskNotFound)
+			} else {
+				fmt.Println(err)
+			}
 		}
 	case "delete":
-		if len(os.Args) < 3 {
+		if len(args) < 2 {
 			fmt.Println("not enough arguments")
 			return
 		}
 
-		id, err := strconv.Atoi(os.Args[2])
+		id, err := strconv.Atoi(args[1])
 		if err != nil {
 			fmt.Printf("strconv id: %v", err)
 			return
 		}
 
 		if err := taskManager.Delete(id); err != nil {
-			fmt.Printf("task manager delete: %v", err)
+			if errors.Is(err, task.ErrTaskNotFound) {
+				fmt.Println(task.ErrTaskNotFound)
+			} else {
+				fmt.Println(err)
+			}
 		}
 	default:
-		fmt.Printf("your command is unknown: %s\n", os.Args[1])
+		fmt.Printf("your command is unknown: %s\n", args[0])
 	}
 
 	if err := fileStorage.Save(taskManager.Tasks); err != nil {
