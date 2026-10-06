@@ -61,7 +61,14 @@ func main() {
 
 		taskManager.Add(args[1])
 	case "list":
-		taskManager.List()
+		if len(args) > 1 {
+			if args[1] == "--done" {
+				taskManager.List(true)
+				return
+			}
+		}
+
+		taskManager.List(false)
 	case "done":
 		if len(args) < 2 {
 			fmt.Println("not enough arguments")

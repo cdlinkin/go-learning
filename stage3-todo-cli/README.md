@@ -142,6 +142,6 @@ This is a basic version of the app. Some possible next steps are:
 
 * Add task priorities
 * Add deadlines
-* Add a `--done` filter for `todo list`
+* ~~Add a `--done` filter for `todo list`~~
 * Add tests
 * Improve the CLI error messages

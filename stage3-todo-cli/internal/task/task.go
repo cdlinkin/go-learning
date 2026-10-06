@@ -29,15 +29,22 @@ func (t *TaskManager) Add(title string) {
 	})
 }
 
-func (t *TaskManager) List() {
-	for i, task := range t.Tasks {
+func (t *TaskManager) List(showDone bool) {
+	countDone := 0
+	for _, task := range t.Tasks {
+		if showDone == true && task.Done == false {
+			continue
+		}
+
+		countDone++
+
 		var done string
 		if task.Done {
 			done = "[x]"
 		} else {
 			done = "[ ]"
 		}
-		fmt.Printf("%d. %s %s\n", i+1, task.Title, done)
+		fmt.Printf("%d. %s %s\n", countDone, task.Title, done)
 	}
 }
 
