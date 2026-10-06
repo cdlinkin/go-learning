@@ -49,14 +49,14 @@ func main() {
 	args := flag.Args()
 
 	if len(args) < 1 {
-		fmt.Println("not enough arguments")
+		printUsage()
 		return
 	}
 
 	switch args[0] {
 	case "add":
 		if len(args) < 3 {
-			fmt.Println("not enough arguments")
+			printUsage()
 			return
 		}
 
@@ -67,12 +67,16 @@ func main() {
 
 			deadline, err = time.Parse("2006-01-02", args[3])
 			if err != nil {
-				fmt.Printf("time parse: %v", err)
+				fmt.Println("invalid deadline: use YYYY-MM-DD")
 				return
 			}
 		}
 
 		if err := taskManager.Add(args[1], args[2], deadline); err != nil {
+			if errors.Is(err, task.ErrNoSuchPriority) {
+				fmt.Println("invalid priority: use high, medium or low")
+				return
+			}
 			fmt.Printf("task manager add: %v", err)
 			return
 		}
@@ -80,14 +84,13 @@ func main() {
 		if len(args) > 1 {
 			if args[1] == "--done" {
 				taskManager.List(true)
-				return
 			}
 		}
 
 		taskManager.List(false)
 	case "done":
 		if len(args) < 2 {
-			fmt.Println("not enough arguments")
+			printUsage()
 			return
 		}
 
@@ -106,7 +109,7 @@ func main() {
 		}
 	case "delete":
 		if len(args) < 2 {
-			fmt.Println("not enough arguments")
+			printUsage()
 			return
 		}
 
@@ -131,4 +134,19 @@ func main() {
 		fmt.Printf("file storage save: %v", err)
 		return
 	}
+}
+
+func printUsage() {
+	fmt.Println(`
+	- Usage:
+  	 	todo add "task title" <priority> [deadline]
+
+	- Priority:
+  	 	high
+  	 	medium
+  	 	low
+
+	- Example:
+  	 	todo add "learn Go" high 2026-10-10
+`)
 }
