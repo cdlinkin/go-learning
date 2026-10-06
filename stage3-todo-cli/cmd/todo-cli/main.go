@@ -54,12 +54,14 @@ func main() {
 
 	switch args[0] {
 	case "add":
-		if len(args) < 2 {
+		if len(args) < 3 {
 			fmt.Println("not enough arguments")
 			return
 		}
 
-		taskManager.Add(args[1])
+		if err := taskManager.Add(args[1], args[2]); err != nil {
+			fmt.Printf("task manager add: %v", err)
+		}
 	case "list":
 		if len(args) > 1 {
 			if args[1] == "--done" {
