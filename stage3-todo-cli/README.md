@@ -2,18 +2,75 @@
 
 A small command-line todo app written in Go.
 
-I built this project to practice working with Go project structure, JSON file storage, command-line arguments, error handling, and interfaces.
+I built this project to practice Go project structure, JSON, file storage, CLI arguments, error handling, interfaces, and unit tests.
 
-## What it can do
+## Features
 
-* Add new tasks
-* Show all tasks
+* Add tasks with priority and optional deadline
+* List all tasks
+* List completed tasks with `--done`
 * Mark tasks as completed
 * Delete tasks
 * Store tasks in a JSON file
-* Use a custom file path with the `-file` flag
+* Use a custom file with the `-file` flag
 
-## Project structure
+## Usage
+
+Add a task:
+
+```bash
+todo add "learn Go" high 2026-10-10
+```
+
+Add a task without a deadline:
+
+```bash
+todo add "buy some bread" low
+```
+
+List tasks:
+
+```bash
+todo list
+```
+
+Show completed tasks:
+
+```bash
+todo list --done
+```
+
+Mark a task as done:
+
+```bash
+todo done 1
+```
+
+Delete a task:
+
+```bash
+todo delete 2
+```
+
+Available priorities:
+
+```text
+high
+medium
+low
+```
+
+## Storage
+
+By default, tasks are stored in `tasks.json` in the user's home directory.
+
+You can also specify a custom file:
+
+```bash
+todo -file ./tasks.json list
+```
+
+## Project Structure
 
 ```text
 stage3-todo-cli/
@@ -23,7 +80,8 @@ stage3-todo-cli/
 ├── internal/
 │   ├── task/
 │   │   ├── task.go
-│   │   └── errors.go
+│   │   ├── errors.go
+│   │   └── task_test.go
 │   └── storage/
 │       ├── storage.go
 │       └── file.go
@@ -31,82 +89,22 @@ stage3-todo-cli/
 └── go.mod
 ```
 
-The project is split into a few simple parts:
+* `cmd/todo` — CLI entry point
+* `internal/task` — task model and logic
+* `internal/storage` — file storage
+* `task_test.go` — unit tests
 
-* `cmd/todo` — CLI entry point and command handling
-* `internal/task` — task model and task operations
-* `internal/storage` — storage interface and JSON file implementation
+## Tests
 
-## Usage
+The project has unit tests for the main task operations, including adding, completing, deleting tasks, priorities, deadlines, errors, and unique IDs.
 
-### Add a task
-
-```bash
-todo add "buy some bread"
-```
-
-### List tasks
+Run tests:
 
 ```bash
-todo list
+go test ./...
 ```
-
-Example:
-
-```text
-1. buy some bread [ ]
-2. learn Go [x]
-3. finish the project [ ]
-```
-
-### Mark a task as done
-
-```bash
-todo done 2
-```
-
-### Delete a task
-
-```bash
-todo delete 3
-```
-
-## Custom file
-
-By default, the app stores tasks in `tasks.json` inside the user's home directory.
-
-You can also specify your own file:
-
-```bash
-todo -file ./tasks.json add "buy some milk"
-```
-
-Then use the same file when listing tasks:
-
-```bash
-todo -file ./tasks.json list
-```
-
-## Error handling
-
-The project uses a sentinel error for cases when a task cannot be found:
-
-```go
-task.ErrTaskNotFound
-```
-
-It is checked with `errors.Is`, so the caller can distinguish a missing task from other errors.
-
-File and JSON errors are wrapped with additional context using `%w`.
 
 ## Installation
-
-Clone the repository:
-
-```bash
-git clone <repository-url>
-cd stage3-todo-cli
-```
 
 Install the CLI:
 
@@ -114,34 +112,30 @@ Install the CLI:
 go install ./cmd/todo
 ```
 
-After that, the `todo` command should be available from your terminal if your Go bin directory is in `PATH`.
+Or run it directly:
 
-## Development
+```bash
+go run ./cmd/todo
+```
 
-Format the code:
+## Checks
 
 ```bash
 gofmt -w .
-```
-
-Run `go vet`:
-
-```bash
 go vet ./...
-```
-
-Run the linter:
-
-```bash
+go test ./...
 golangci-lint run
 ```
 
-## What's next
+## What I Practiced
 
-This is a basic version of the app. Some possible next steps are:
+* Go project structure
+* JSON and file operations
+* CLI arguments
+* Interfaces
+* Error handling with `errors.Is`
+* `time.Time`
+* Unit testing
+* Git
 
-* ~~Add task priorities~~
-* ~~Add deadlines~~
-* ~~Add a `--done` filter for `todo list`~~
-* ~~Add tests~~
-* ~~Improve the CLI error messages~~
+This is a small project, but it helped me understand how different parts of a Go application work together.
