@@ -2,13 +2,15 @@ package task
 
 import (
 	"fmt"
+	"time"
 )
 
 type Task struct {
-	ID       int    `json:"id"`
-	Title    string `json:"title"`
-	Done     bool   `json:"done"`
-	Priority string `json:"priority"`
+	ID       int       `json:"id"`
+	Title    string    `json:"title"`
+	Done     bool      `json:"done"`
+	Priority string    `json:"priority"`
+	Deadline time.Time `json:"deadline"`
 }
 
 const (
@@ -21,7 +23,7 @@ type TaskManager struct {
 	Tasks []Task
 }
 
-func (t *TaskManager) Add(title, priority string) error {
+func (t *TaskManager) Add(title, priority string, deadline time.Time) error {
 	if priority != high && priority != medium && priority != low {
 		return ErrNoSuchPriority
 	}
@@ -38,6 +40,7 @@ func (t *TaskManager) Add(title, priority string) error {
 		Title:    title,
 		Done:     false,
 		Priority: priority,
+		Deadline: deadline,
 	})
 	return nil
 }
@@ -51,13 +54,19 @@ func (t *TaskManager) List(showDone bool) {
 
 		countDone++
 
+		deadline := ""
+
+		if !task.Deadline.IsZero() {
+			deadline = task.Deadline.Format("2006-01-02")
+		}
+
 		var done string
 		if task.Done {
 			done = "[ ✔ ]"
 		} else {
 			done = "[   ]"
 		}
-		fmt.Printf("%d. %s %s [ %s ]\n", countDone, task.Title, done, task.Priority)
+		fmt.Printf("%d. %s %s [ %s ] | DEADLINE: %s\n", countDone, task.Title, done, task.Priority, deadline)
 	}
 }
 

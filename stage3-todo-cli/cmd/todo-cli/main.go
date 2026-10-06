@@ -9,6 +9,7 @@ import (
 	"stage3-todo-cli/internal/storage"
 	"stage3-todo-cli/internal/task"
 	"strconv"
+	"time"
 )
 
 func main() {
@@ -59,8 +60,21 @@ func main() {
 			return
 		}
 
-		if err := taskManager.Add(args[1], args[2]); err != nil {
+		var deadline time.Time
+
+		if len(args) == 4 {
+			var err error
+
+			deadline, err = time.Parse("2006-01-02", args[3])
+			if err != nil {
+				fmt.Printf("time parse: %v", err)
+				return
+			}
+		}
+
+		if err := taskManager.Add(args[1], args[2], deadline); err != nil {
 			fmt.Printf("task manager add: %v", err)
+			return
 		}
 	case "list":
 		if len(args) > 1 {
