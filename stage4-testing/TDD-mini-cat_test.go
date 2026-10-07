@@ -1,3 +1,10 @@
+/*
+exercise:
+
+	First, write the tests, then the code for the ParseDuration("1h30m")
+	function (a simplified parser: hours, minutes, seconds)
+	At least 12 table cases, including erroneous input
+*/
 package duration
 
 import (
@@ -83,5 +90,20 @@ func TestParseDuration(t *testing.T) {
 			input:   "1hxyz",
 			wantErr: true,
 		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ParseDuration(tt.input)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ParseDuration() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			if got != tt.want {
+				t.Errorf("ParseDuration() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
